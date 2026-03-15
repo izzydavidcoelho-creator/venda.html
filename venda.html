@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creator Shop | José David</title>
+    <title>Creator Shop | José David | Promoção 🚀</title>
     <style>
-        :root { --gold: #d4af37; --dark-bg: #0f0f0f; --card-bg: #1a1a1a; --white: #ffffff; --green: #25d366; }
+        :root { --gold: #d4af37; --dark-bg: #0f0f0f; --card-bg: #1a1a1a; --white: #ffffff; --green: #25d366; --promo-red: #cc0000; }
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--dark-bg); color: var(--white); margin: 0; padding-bottom: 150px; }
         
-        header { text-align: center; padding: 40px 20px; border-bottom: 2px solid var(--gold); background: #1a1a1a; }
+        /* Estilo do Banner de Promoção */
+        .promo-banner { background: var(--gold); color: black; text-align: center; padding: 10px; font-weight: bold; font-size: 0.9em; position: sticky; top: 0; z-index: 1001; border-bottom: 2px solid #000; }
+        
+        header { text-align: center; padding: 40px 20px; border-bottom: 2px solid var(--gold); background: #1a1a1a; margin-top: -10px; }
         header h1 { color: var(--gold); margin: 0; }
 
         .container { padding: 20px; max-width: 600px; margin: 0 auto; }
         .vitrine { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
         
-        .produto-card { background: var(--card-bg); border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; }
+        .produto-card { background: var(--card-bg); border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; position: relative; }
         .produto-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; }
-        .preco { display: block; color: var(--gold); font-weight: bold; margin-bottom: 10px; }
+        .preco { display: block; color: var(--gold); font-weight: bold; margin-bottom: 5px; }
+        .preco-antigo { text-decoration: line-through; color: #888; font-size: 0.8em; margin-right: 5px; }
         .btn-add { background: var(--gold); color: black; border: none; padding: 10px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
 
         /* Estilo do Formulário */
@@ -39,6 +43,10 @@
     </style>
 </head>
 <body>
+
+<div class="promo-banner">
+    🔥 PROMOÇÃO DE HOJE: 20% DE DESCONTO EM TODOS OS DESIGN!
+</div>
 
 <header>
     <h1>CREATOR SHOP 🚀</h1>
@@ -75,11 +83,12 @@
 <script>
     const MEU_WHATSAPP = "244930684797";
 
+    // Preços ajustados com 20% de desconto (aproximado)
     const produtos = [
-        { id: 1, nome: "Logo Profissional", preco: 5000, img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400" },
-        { id: 2, nome: "Banner YouTube", preco: 3500, img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400" },
-        { id: 3, nome: "Edição de Vídeo", preco: 4000, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400" },
-        { id: 4, nome: "Criação de Site", preco: 25000, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400" }
+        { id: 1, nome: "Logo Profissional", preco: 4000, precoAntigo: 5000, img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400" },
+        { id: 2, nome: "Banner YouTube", preco: 2800, precoAntigo: 3500, img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400" },
+        { id: 3, nome: "Edição de Vídeo", preco: 3200, precoAntigo: 4000, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400" },
+        { id: 4, nome: "Criação de Site", preco: 20000, precoAntigo: 25000, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400" }
     ];
 
     let carrinho = [];
@@ -89,7 +98,10 @@
             <div class="produto-card">
                 <img src="${p.img}" alt="${p.nome}">
                 <h3>${p.nome}</h3>
-                <span class="preco">${p.preco.toLocaleString('pt-AO')} Kz</span>
+                <span class="preco">
+                    <span class="preco-antigo">${p.precoAntigo.toLocaleString('pt-AO')} Kz</span>
+                    ${p.preco.toLocaleString('pt-AO')} Kz
+                </span>
                 <button class="btn-add" onclick="adicionar(${p.id})">ADICIONAR +</button>
             </div>
         `).join('');
@@ -116,6 +128,7 @@
 
         let total = 0;
         let msg = `🔥 *NOVO PEDIDO - CREATOR SHOP*%0A%0A`;
+        msg += `📣 *PROMOÇÃO ATIVA (20% OFF)*%0A`;
         msg += `👤 *Cliente:* ${nome}%0A`;
         msg += `🏢 *Empresa:* ${empresa || 'Não informada'}%0A%0A`;
         msg += `🛒 *Serviços:*%0A`;
