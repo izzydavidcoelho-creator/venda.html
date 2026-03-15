@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-ao">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator Shop | José David</title>
+    <style>
+        :root { --gold: #d4af37; --dark-bg: #0f0f0f; --card-bg: #1a1a1a; --white: #ffffff; --green: #25d366; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--dark-bg); color: var(--white); margin: 0; padding-bottom: 150px; }
+        
+        header { text-align: center; padding: 40px 20px; border-bottom: 2px solid var(--gold); background: #1a1a1a; }
+        header h1 { color: var(--gold); margin: 0; }
+
+        .container { padding: 20px; max-width: 600px; margin: 0 auto; }
+        .vitrine { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px; }
+        
+        .produto-card { background: var(--card-bg); border-radius: 15px; padding: 15px; text-align: center; border: 1px solid #333; }
+        .produto-card img { width: 100%; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; border: 1px solid #444; }
+        .preco { display: block; color: var(--gold); font-weight: bold; margin-bottom: 10px; }
+        .btn-add { background: var(--gold); color: black; border: none; padding: 10px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
+
+        /* Estilo do Formulário */
+        .form-section { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--gold); margin-bottom: 30px; }
+        .form-section h2 { color: var(--gold); font-size: 1.2em; margin-top: 0; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; background: #252525; border: 1px solid #444; color: white; border-radius: 8px; }
+        textarea { height: 80px; resize: none; }
+
+        /* FAQ */
+        .faq-section { background: var(--card-bg); padding: 20px; border-radius: 15px; border-left: 4px solid var(--gold); margin-bottom: 30px; }
+        .faq-item { border-bottom: 1px solid #333; padding: 10px 0; }
+        .faq-pergunta { cursor: pointer; color: var(--gold); font-weight: bold; }
+        .faq-resposta { display: none; padding: 10px 0; font-size: 0.9em; color: #ccc; }
+
+        .carrinho-float { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); background: var(--green); color: white; padding: 15px 30px; border-radius: 50px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); width: 90%; justify-content: center; border: none; font-weight: bold; cursor: pointer; z-index: 1000; }
+        .badge { background: white; color: var(--green); padding: 2px 8px; border-radius: 10px; }
+
+        @media (max-width: 450px) { .vitrine { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>CREATOR SHOP 🚀</h1>
+    <p>Design Digital Premium</p>
+</header>
+
+<div class="container">
+    <div class="vitrine" id="lista-produtos"></div>
+
+    <div class="form-section">
+        <h2>📝 Detalhes do Projeto</h2>
+        <input type="text" id="nome-cliente" placeholder="Seu nome completo">
+        <input type="text" id="nome-empresa" placeholder="Nome da sua Empresa/Marca">
+        <textarea id="descricao-pedido" placeholder="Descreva como deseja o design (Cores, estilo, referências...)"></textarea>
+    </div>
+
+    <div class="faq-section">
+        <h2 style="color: var(--gold); font-size: 1.2em;">Dúvidas Frequentes 🤔</h2>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <span class="faq-pergunta">Como recebo o meu design?</span>
+            <p class="faq-resposta">Enviamos em alta resolução por E-mail ou WhatsApp.</p>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+            <span class="faq-pergunta">Quais as formas de pagamento?</span>
+            <p class="faq-resposta">Multicaixa Express ou Depósito (IBAN).</p>
+        </div>
+    </div>
+</div>
+
+<button class="carrinho-float" onclick="enviarWhatsApp()">
+    ENVIAR PEDIDO <span class="badge" id="contagem">0</span>
+</button>
+
+<script>
+    const MEU_WHATSAPP = "244930684797";
+
+    const produtos = [
+        { id: 1, nome: "Logo Profissional", preco: 5000, img: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=400" },
+        { id: 2, nome: "Banner YouTube", preco: 3500, img: "https://images.unsplash.com/photo-1614850523296-d8c1af93d400?w=400" },
+        { id: 3, nome: "Edição de Vídeo", preco: 4000, img: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=400" },
+        { id: 4, nome: "Criação de Site", preco: 25000, img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400" }
+    ];
+
+    let carrinho = [];
+
+    function renderizarVitrine() {
+        document.getElementById('lista-produtos').innerHTML = produtos.map(p => `
+            <div class="produto-card">
+                <img src="${p.img}" alt="${p.nome}">
+                <h3>${p.nome}</h3>
+                <span class="preco">${p.preco.toLocaleString('pt-AO')} Kz</span>
+                <button class="btn-add" onclick="adicionar(${p.id})">ADICIONAR +</button>
+            </div>
+        `).join('');
+    }
+
+    function adicionar(id) {
+        carrinho.push(produtos.find(p => p.id === id));
+        document.getElementById('contagem').innerText = carrinho.length;
+        alert("Serviço adicionado ao carrinho!");
+    }
+
+    function toggleFaq(elemento) {
+        const resposta = elemento.querySelector('.faq-resposta');
+        resposta.style.display = (resposta.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function enviarWhatsApp() {
+        const nome = document.getElementById('nome-cliente').value;
+        const empresa = document.getElementById('nome-empresa').value;
+        const desc = document.getElementById('descricao-pedido').value;
+
+        if (carrinho.length === 0) return alert("Selecione pelo menos um serviço!");
+        if (!nome) return alert("Por favor, digite o seu nome.");
+
+        let total = 0;
+        let msg = `🔥 *NOVO PEDIDO - CREATOR SHOP*%0A%0A`;
+        msg += `👤 *Cliente:* ${nome}%0A`;
+        msg += `🏢 *Empresa:* ${empresa || 'Não informada'}%0A%0A`;
+        msg += `🛒 *Serviços:*%0A`;
+        
+        carrinho.forEach(i => {
+            msg += `• ${i.nome} (${i.preco} Kz)%0A`;
+            total += i.preco;
+        });
+
+        msg += `%0A📝 *Descrição:* ${desc || 'Sem detalhes adicionais'}%0A`;
+        msg += `%0A💰 *TOTAL: ${total} Kz*`;
+
+        window.open(`https://wa.me/${MEU_WHATSAPP}?text=${msg}`);
+    }
+
+    renderizarVitrine();
+</script>
+</body>
+</html>
